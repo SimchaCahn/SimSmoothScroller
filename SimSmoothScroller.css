@@ -4,6 +4,10 @@
 	display: flex;
 }
 
+.SimSmoothScroller_innerWrapper {
+	width: 100%;
+}
+
 #myDiv {
 	background-color: lightgreen;
 	width: 400px;
