@@ -1,0 +1,28 @@
+.SimSmoothScroller_outerWrapper {
+	height: 400px;
+	overflow: hidden;
+	display: flex;
+}
+
+#myDiv {
+	background-color: lightgreen;
+	width: 400px;
+}
+
+.SimSmoothScroller_scrollbar {
+	height: 100%;
+	flex-shrink: 0;
+	padding: 1px;
+	background: rgba(200,200,200,0.3);
+}
+
+.SimSmoothScroller_scrollbarThumb {
+	background: rgba(255, 255, 255, 0.4);
+	border: 1px solid rgba(0, 0, 0, 0.6);
+	border-radius: 10px;
+	box-sizing: border-box;
+}
+
+.SimSmoothScroller_scrollbarThumb:hover, .SimSmoothScroller_scrollbarThumb_hover {
+	background: rgba(255, 255, 255, 0.55);
+}
