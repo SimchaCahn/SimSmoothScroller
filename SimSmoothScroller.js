@@ -46,20 +46,32 @@ var SimSmoothScroller = (function() {
 		// Apply essential style
 		_this.elements.scrollbar.style.width = _this.config.scrollbarWidth + 'px';
 
+		_this.handleAllEvents = handleAllEvents(_this);
+
 		_this.reconfigSize();
-		
+
+		_window.addEventListener('resize', _this.reconfigSize.bind(_this));
+	};
+
+	var handleAllEvents = function(_this) {
 		_this.clickAndDragHandler = clickAndDragHandler(_this);
 		_this.scrollToClickHandler = scrollToClickHandler(_this);
 		_this.mouseWheelHandler = mouseWheelHandler(_this);
 
-		// Apply events
-		_this.clickAndDragHandler.add();
-		_this.scrollToClickHandler.add();
-		_this.mouseWheelHandler.add();
-
-		_window.addEventListener('resize', _this.reconfigSize.bind(_this));
+		return {
+			add: function() {
+				_this.clickAndDragHandler.add();
+				_this.scrollToClickHandler.add();
+				_this.mouseWheelHandler.add();
+			},
+			remove: function() {
+				_this.clickAndDragHandler.remove();
+				_this.scrollToClickHandler.remove();
+				_this.mouseWheelHandler.remove();
+			}
+		};
 	};
-	
+
 	SimSmoothScroller.prototype.reconfigSize = function() {
 		// Create local variables
 		var _this = this,
@@ -84,24 +96,32 @@ var SimSmoothScroller = (function() {
 
 		// Set size for DOM
 		_elements.scrollbarThumb.style.height = _size.scrollbarThumbHeight + 'px';
+
+		if (_elements.scrollbarThumb.offsetHeight < _size.containerHeight) {
+			_this.handleAllEvents.add();
+			_this.elements.scrollbar.style.opacity = '1';
+		} else {
+			_this.handleAllEvents.remove();
+			_this.elements.scrollbar.style.opacity = '0';
+		}
 	};
 
 	SimSmoothScroller.prototype.scrollToPx = function(px, shouldBounce) {
 		var _this = this,
 			scrollTo = scrollToHandler(_this, px, shouldBounce);
-		
+
 		_this.stopScrolling();
 		scrollTo();
 	};
-	
+
 	SimSmoothScroller.prototype.stopScrolling = function() {
 		_window.cancelAnimationFrame(this.animID);
 	};
-	
+
 	var mouseWheelHandler = function(_this) {
 		var _outerWrapper = _this.elements.outerWrapper,
 			scrollTo = scrollToHandler(_this);
-		
+
 		return {
 			add: function() {
 				_outerWrapper.addEventListener('mousewheel', scrollTo);
@@ -123,14 +143,14 @@ var SimSmoothScroller = (function() {
 
 		var click = function(e) {
 			if (e.target !== _this.elements.scrollbar) return;
-			
+
 			var getBoundsTop = e.target.getBoundingClientRect().top,
 				clientY = e.clientY - _size.scrollbarThumbHeight / 2 - getBoundsTop,
 				customChange = 0;
 
 			clientY = clientY * _size.contentHeight / _size.containerHeight;
 			customChange = clientY - -_this.position.scrollPosition;
-			
+
 			var scrollTo = scrollToHandler(_this, clientY, false, customChange);
 			scrollTo();
 		};
@@ -161,9 +181,9 @@ var SimSmoothScroller = (function() {
 			},
 			mouseDown = function(e) {
 				if (e.target !== _this.elements.scrollbarThumb) return;
-				
+
 				_this.elements.scrollbarThumb.classList.add('SimSmoothScroller_scrollbarThumb_hover');
-				
+
 				_this.stopScrolling();
 				change = e.clientY - _this.position.scrollbarPosition;
 				_window.addEventListener('mousemove', mouseMove);
@@ -194,7 +214,7 @@ var SimSmoothScroller = (function() {
 
 		var direction = 0,
 			scrollSpeed = _config.scrollSpeed;
-		
+
 		if (typeof shouldBounce !== 'boolean') shouldBounce = true;
 
 		var utilityOjb = {
@@ -205,7 +225,7 @@ var SimSmoothScroller = (function() {
 					currentFrame = 0, // current frame in animation
 					prevScrollPosition = null; // Cannot assign any number yet (i.e. 0), because `scrollPosition` may be that number.
 				_this.animID = _window.requestAnimationFrame(animation); // Restart animation
-				
+
 				function animation() {
 					_this.animID = _window.requestAnimationFrame(animation); // Restart animation
 
@@ -247,7 +267,7 @@ var SimSmoothScroller = (function() {
 					currentFrame = 0;
 
 				_this.animID = _window.requestAnimationFrame(smoothBouncBack); // Start animation
-				
+
 				function smoothBouncBack() {
 					_this.animID = _window.requestAnimationFrame(smoothBouncBack); // Restart animation
 
@@ -299,9 +319,9 @@ var SimSmoothScroller = (function() {
 
 			if (typeof e === 'object') {
 				e.preventDefault() // Prevent parent element from scrolling
-				
+
 				scrollSpeed++; // Scroll faster
-				
+
 				var localDirection = (e.detail < 0 || e.wheelDelta > 0) ? -1 : 1; // 1 = scroll down, -1 = scroll up
 				// Check if scroll direction changed
 				if (direction != localDirection) {
@@ -315,7 +335,7 @@ var SimSmoothScroller = (function() {
 
 		return mouseWheel;
 	};
-	
+
 	function createDOM(_this, contentElem) {
 		var outerWrapper = _doc.createElement('div'),
 			innerWrapper = _doc.createElement('div'),
@@ -341,7 +361,7 @@ var SimSmoothScroller = (function() {
 			scrollbarThumb: scrollbarThumb
 		};
 	}
-	
+
 	function renderScroll(_this, scale3d) {
 		if (typeof scale3d !== 'string') scale3d = '';
 
@@ -368,7 +388,7 @@ var SimSmoothScroller = (function() {
 	function extend(defaults, config) {
 		if (!isObject(defaults)) defaults = {};
 		if (!isObject(config)) config = {};
-		
+
 		var obj = {};
 		for (var key in defaults) {
 			if (!defaults.hasOwnProperty(key)) continue;
@@ -384,6 +404,3 @@ var SimSmoothScroller = (function() {
 
 	return SimSmoothScroller;
 })();
-
-//var myDiv = document.getElementById('myDiv');
-//var hello = new SimSmoothScroller(myDiv);
