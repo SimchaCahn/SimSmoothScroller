@@ -51,6 +51,7 @@ var SimSmoothScroller = (function() {
 		_this.reconfigSize();
 
 		_window.addEventListener('resize', _this.reconfigSize);
+		console.log(_this)
 	};
 
 	var handleAllEvents = function(_this) {
@@ -104,6 +105,10 @@ var SimSmoothScroller = (function() {
 			_this.handleAllEvents.remove();
 			_this.elements.scrollbar.style.opacity = '0';
 		}
+		
+		
+		
+		_this.scrollToPx(_position.scrollPosition, false)
 	};
 
 	SimSmoothScroller.prototype.scrollToPx = function(px, shouldBounce) {
