@@ -51,7 +51,6 @@ var SimSmoothScroller = (function() {
 		_this.reconfigSize();
 
 		_window.addEventListener('resize', _this.reconfigSize.bind(this));
-		console.log(_this)
 	};
 
 	var handleAllEvents = function(_this) {
@@ -80,9 +79,6 @@ var SimSmoothScroller = (function() {
 			_size = _this.size,
 			_position = _this.position,
 			_elements = _this.elements;
-		
-		console.log(_this)
-		console.log(_elements.innerWrapper)
 
 		// Get main sizes
 		_size.containerHeight = _elements.innerWrapper.offsetHeight;
