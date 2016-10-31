@@ -50,7 +50,7 @@ var SimSmoothScroller = (function() {
 
 		_this.reconfigSize();
 
-		_window.addEventListener('resize', _this.reconfigSize.bind(_this));
+		_window.addEventListener('resize', _this.reconfigSize);
 	};
 
 	var handleAllEvents = function(_this) {
