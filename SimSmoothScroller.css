@@ -1,5 +1,7 @@
 .SimSmoothScroller_outerWrapper {
 	height: inherit;
+	max-height: inherit;
+	min-height: inherit;
 	overflow: hidden;
 	display: flex;
 }
