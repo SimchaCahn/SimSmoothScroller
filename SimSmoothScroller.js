@@ -6,7 +6,7 @@ var SimSmoothScroller = (function() {
 	var defaultSettings = {
 		scrollbarWidth: 14,
 		bouncePadding: 30,
-		scrollSpeed: 2,
+		scrollSpeed: 4,
 		scrollWheelFrames: 35,
 		scrollClickFrames: 25,
 		bounceFrames: 7,
